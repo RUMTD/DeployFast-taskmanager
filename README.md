@@ -375,7 +375,7 @@ develop   → Intégration. Push → déploiement staging automatique.
 feature/* → Fonctionnalités. Pull Request vers develop avant merge.
 hotfix/*  → Corrections urgentes. Pull Request directement vers main.
 ```
-
+**IL EST A NOTER QUE LA SEULE BRANCHE CREE EST LA MAIN POUR L'ÉVALUATION LES AUTRES MONTRE COMMENT LES BRANCHES PEUVENT ÊTRE ORGANISÉ SI ON VEUT INVITER DES COLLABORATEUR AU PROJET OU MEME POUR NOUS MEME POUR LES CORRECTION QUAND L'API SERA HÉBERGE**
 #### Déclencheurs du pipeline
 
 | Événement | Branches | Jobs déclenchés |

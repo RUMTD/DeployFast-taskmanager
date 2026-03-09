@@ -163,25 +163,23 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: OWASP Dependency Check
-        run: |
-          mvn org.owasp:dependency-check-maven:check \
-            -DfailBuildOnCVSS=9 \
-            -B || true
-        continue-on-error: true
+      - name: Trivy - Scan dépendances et secrets
+        uses: aquasecurity/trivy-action@master
+        with:
+            scan-type: 'fs'
+            scan-ref: '.'
+            format: 'table'
+            exit-code: '0'
+            severity: 'CRITICAL,HIGH'
+            scanners: 'vuln,secret'
+            output: trivy-fs-results.txt
 
-      - name: Upload OWASP report
+      - name: Upload Trivy filesystem report
         uses: actions/upload-artifact@v4
         with:
-          name: owasp-dependency-report
-          path: target/dependency-check-report.html
-          retention-days: 7
-
-      - name: Secret Detection with Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+            name: trivy-filesystem-report
+            path: trivy-fs-results.txt
+            retention-days: 7
 
   # ============================================================
   # JOB 5: BUILD IMAGE DOCKER + PUSH DOCKERHUB
