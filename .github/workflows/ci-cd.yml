@@ -78,8 +78,8 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Run tests with coverage
-        run: mvn test jacoco:report -B
+      - name: Run tests, coverage report and check threshold (60%)
+        run: mvn verify -B
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
@@ -87,9 +87,6 @@ jobs:
           name: jacoco-coverage-report
           path: target/site/jacoco/
           retention-days: 7
-
-      - name: Check coverage threshold (60%)
-        run: mvn jacoco:check -B
 
   # ============================================================
   # JOB 3: ANALYSE SONARCLOUD
@@ -126,7 +123,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: Run tests and generate coverage for Sonar
-        run: mvn test jacoco:report -B
+        run: mvn verify -B
 
       - name: SonarCloud Scan
         env:

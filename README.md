@@ -2,24 +2,6 @@
 
 **Application REST Spring Boot** avec pipeline CI/CD complet — Examen BC01 EADL4
 
-[![CI/CD Pipeline](https://github.com/deployfast/taskmanager/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/deployfast/taskmanager/actions)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=deployfast_taskmanager&metric=alert_status)](https://sonarcloud.io/dashboard?id=deployfast_taskmanager)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=deployfast_taskmanager&metric=coverage)](https://sonarcloud.io/dashboard?id=deployfast_taskmanager)
-[![Docker Image](https://img.shields.io/docker/v/deployfast/taskmanager?label=DockerHub)](https://hub.docker.com/r/deployfast/taskmanager)
-
----
-
-## 📋 Table des matières
-
-1. [Lancer le projet](#lancer-le-projet)
-2. [QUESTION 1 — Conception architecturale et modélisation](#question-1--conception-architecturale-et-modélisation)
-3. [QUESTION 2 — Réalisation, qualité et sécurité](#question-2--réalisation-qualité-et-sécurité)
-4. [QUESTION 3 — Conception du pipeline](#question-3--conception-du-pipeline)
-5. [QUESTION 4 — Implémentation du pipeline](#question-4--implémentation-du-pipeline)
-6. [QUESTION 5 — Déploiement automatique](#question-5--déploiement-automatique)
-7. [QUESTION 6 — Optimisation & Clean Code](#question-6--optimisation--clean-code)
-
----
 
 ## Lancer le projet
 
@@ -186,7 +168,7 @@ Le préfixe `/api/v1/` permet d'introduire une version v2 sans casser les client
   "success": true,
   "message": "Tâche créée",
   "status": 201,
-  "data": { ... }
+  "data": { ...}
 }
 ```
 
