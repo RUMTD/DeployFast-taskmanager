@@ -1,0 +1,50 @@
+version: "3.9"
+
+# =======================================================
+# Environnement STAGING - DeployFast Task Manager
+# Option bonus: environnement de pré-production
+# =======================================================
+
+services:
+  app-staging:
+    image: ${DOCKER_IMAGE:-deployfast/taskmanager}:${STAGING_TAG:-staging}
+    container_name: taskmanager-staging
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://db-staging:5432/taskmanager_staging
+      - DB_USERNAME=${POSTGRES_USER:-staginguser}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-stagingpassword}
+      - JWT_SECRET=${JWT_SECRET}
+      - DDL_AUTO=update
+      - SPRING_PROFILES_ACTIVE=staging
+    depends_on:
+      db-staging:
+        condition: service_healthy
+    networks:
+      - staging-network
+
+  db-staging:
+    image: postgres:16-alpine
+    container_name: taskmanager-db-staging
+    environment:
+      - POSTGRES_DB=taskmanager_staging
+      - POSTGRES_USER=${POSTGRES_USER:-staginguser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-stagingpassword}
+    volumes:
+      - postgres_staging_data:/var/lib/postgresql/data
+    networks:
+      - staging-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U staginguser -d taskmanager_staging"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_staging_data:
+
+networks:
+  staging-network:
+    driver: bridge

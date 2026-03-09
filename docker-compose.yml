@@ -1,0 +1,67 @@
+version: "3.9"
+
+# =======================================================
+# DeployFast Task Manager - Docker Compose
+# Services: app + postgresql
+# =======================================================
+
+services:
+  # -------------------------------------------------------
+  # Application Spring Boot
+  # -------------------------------------------------------
+  app:
+    image: ${DOCKER_IMAGE:-deployfast/taskmanager:latest}
+    container_name: taskmanager-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=jdbc:postgresql://db:5432/${POSTGRES_DB:-taskmanager}
+      - DB_USERNAME=${POSTGRES_USER:-taskuser}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-taskpassword}
+      - JWT_SECRET=${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      - JWT_EXPIRATION=${JWT_EXPIRATION:-86400000}
+      - DDL_AUTO=update
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - taskmanager-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # -------------------------------------------------------
+  # Base de données PostgreSQL
+  # -------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: taskmanager-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-taskmanager}
+      - POSTGRES_USER=${POSTGRES_USER:-taskuser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-taskpassword}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - taskmanager-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-taskuser} -d ${POSTGRES_DB:-taskmanager}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  taskmanager-network:
+    driver: bridge
